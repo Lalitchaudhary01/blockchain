@@ -37,7 +37,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-4">
             <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium animate-pulse">
-              Connect Wallet
+              Login
             </button>
             <button
               className="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-neutral-800"

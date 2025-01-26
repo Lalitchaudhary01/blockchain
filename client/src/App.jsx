@@ -2,7 +2,7 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import LiveStats from "./components/LiveStats";
 import StakingFeatures from "./components/StakingFeatures";
-import ReferralProgram from "./components/ReferralProgram";
+// import ReferralProgram from "./components/ReferralProgram";
 import SecurityMeasures from "./components/SecurityMeasures";
 import UserGuide from "./components/UserGuide";
 import SupportSection from "./components/SupportSection";
@@ -16,7 +16,7 @@ export default function App() {
         <Hero />
         <LiveStats />
         <StakingFeatures />
-        <ReferralProgram />
+        {/* <ReferralProgram /> */}
         <SecurityMeasures />
         <UserGuide />
         <SupportSection />
