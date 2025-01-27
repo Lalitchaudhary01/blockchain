@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link from React Router
 import { Bars3Icon } from "@heroicons/react/24/outline";
 
 export default function Navbar() {
@@ -8,7 +9,7 @@ export default function Navbar() {
     { name: "Home", href: "#hero" },
     { name: "Live Stats", href: "#liveStats" },
     { name: "Staking", href: "#stakingFeatures" },
-    { name: "Referrals", href: "#referralProgram" },
+    // { name: "Referrals", href: "#referralProgram" },
     { name: "Security", href: "#securityMeasures" },
     { name: "Guide", href: "#userGuide" },
     { name: "Support", href: "#supportSection" },
@@ -36,8 +37,9 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-4">
+            {/* Navigate to AuthToggle route */}
             <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium animate-pulse">
-              Login
+              Login & Register
             </button>
             <button
               className="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-neutral-800"

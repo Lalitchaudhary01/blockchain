@@ -1,3 +1,4 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import LiveStats from "./components/LiveStats";
@@ -10,18 +11,31 @@ import Footer from "./components/Footer";
 
 export default function App() {
   return (
-    <div className="antialiased text-gray-800 min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 relative">
-        <Hero />
-        <LiveStats />
-        <StakingFeatures />
-        {/* <ReferralProgram /> */}
-        <SecurityMeasures />
-        <UserGuide />
-        <SupportSection />
-      </main>
-      <Footer />
-    </div>
+    <Router>
+      <div className="antialiased text-gray-800 min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 relative">
+          <Routes>
+            {/* Define routes */}
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
+  );
+}
+
+// Home component containing the main sections
+function Home() {
+  return (
+    <>
+      <Hero />
+      <LiveStats />
+      <StakingFeatures />
+      <SecurityMeasures />
+      <UserGuide />
+      <SupportSection />
+    </>
   );
 }

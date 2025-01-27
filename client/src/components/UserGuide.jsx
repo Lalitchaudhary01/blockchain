@@ -56,7 +56,7 @@ export default function UserGuide() {
 
   return (
     <section id="userGuide" className="py-20 bg-neutral-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-white mb-4">
             Getting Started
@@ -115,41 +115,38 @@ export default function UserGuide() {
               )}
             </div>
           ))}
-        </div>
+        </div> */}
 
-        <div className="mt-16 bg-neutral-900 rounded-xl p-8">
-          <h3 className="text-2xl font-bold text-white mb-6 text-center">
-            FAQs
-          </h3>
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <div
-                key={faq.question}
-                className="border border-neutral-700 rounded-lg"
+      <div className="mt-16 bg-neutral-900 rounded-xl p-8">
+        <h3 className="text-2xl font-bold text-white mb-6 text-center">FAQs</h3>
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <div
+              key={faq.question}
+              className="border border-neutral-700 rounded-lg"
+            >
+              <button
+                className="w-full flex justify-between items-center p-4 text-left"
+                onClick={() => setOpenFaq(openFaq === index ? null : index)}
               >
-                <button
-                  className="w-full flex justify-between items-center p-4 text-left"
-                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                <span className="text-white font-medium">{faq.question}</span>
+                <svg
+                  className={`w-5 h-5 text-purple-500 transform transition-transform ${
+                    openFaq === index ? "rotate-180" : ""
+                  }`}
                 >
-                  <span className="text-white font-medium">{faq.question}</span>
-                  <svg
-                    className={`w-5 h-5 text-purple-500 transform transition-transform ${
-                      openFaq === index ? "rotate-180" : ""
-                    }`}
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-                {openFaq === index && (
-                  <div className="p-4 pt-0 text-gray-300">{faq.answer}</div>
-                )}
-              </div>
-            ))}
-          </div>
+                  <path
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {openFaq === index && (
+                <div className="p-4 pt-0 text-gray-300">{faq.answer}</div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </section>
