@@ -151,7 +151,7 @@ const LiveStats = () => {
         </div>
 
         {/* Transactions Table */}
-        <div className="mt-16 bg-neutral-900 rounded-lg p-6 animate__animated animate__fadeInUp">
+        {/* <div className="mt-16 bg-neutral-900 rounded-lg p-6 animate__animated animate__fadeInUp">
           <h3 className="text-xl font-bold text-white mb-6">
             Recent Transactions
           </h3>
@@ -192,8 +192,8 @@ const LiveStats = () => {
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
+          </div> */}
+        {/* </div> */}
       </div>
     </section>
   );
