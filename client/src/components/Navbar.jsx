@@ -1,77 +1,115 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Bars3Icon } from "@heroicons/react/24/outline";
-import AuthForm from "./AuthForm"; // Update path as needed
+import React, { useState } from "react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignOutButton,
+  UserButton,
+} from "@clerk/clerk-react";
 
-export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showAuthForm, setShowAuthForm] = useState(false);
+const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   const navLinks = [
-    { name: "Home", href: "#hero" },
-    { name: "Live Stats", href: "#liveStats" },
-    { name: "Staking", href: "#stakingFeatures" },
-    { name: "Security", href: "#securityMeasures" },
-    { name: "Guide", href: "#userGuide" },
-    { name: "Support", href: "#supportSection" },
+    "Home",
+    "Live Stats",
+    "Staking",
+    "Security",
+    "Guide",
+    "Support",
   ];
 
   return (
     <nav className="fixed w-full z-50 bg-neutral-900 border-b border-neutral-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
+          {/* Logo */}
           <div className="flex items-center">
             <span className="text-2xl font-bold text-purple-500">SolStake</span>
-            <div className="hidden md:block ml-10">
-              <div className="flex space-x-4">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    {link.name}
-                  </a>
-                ))}
-              </div>
-            </div>
           </div>
 
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex space-x-6">
+            {navLinks.map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase().replace(" ", "")}`}
+                className="text-gray-300 hover:text-white text-sm font-medium transition-all"
+              >
+                {item}
+              </a>
+            ))}
+          </div>
+
+          {/* Authentication & Mobile Menu Button */}
           <div className="flex items-center gap-4">
+            {/* Show SignInButton when SignedOut, and UserButton when SignedIn */}
+            <SignedOut>
+              <SignInButton>
+                <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium animate-pulse">
+                  Login & Register
+                </button>
+              </SignInButton>
+            </SignedOut>
+
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+
+            {/* Mobile Menu Button */}
             <button
-              onClick={() => setShowAuthForm(true)}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium animate-pulse"
-            >
-              Login & Register
-            </button>
-            <button
+              aria-label="Toggle mobile menu"
               className="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-neutral-800"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={toggleMobileMenu}
             >
-              <Bars3Icon className="h-6 w-6" />
+              <svg
+                className="w-6 h-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {isMobileMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
             </button>
           </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-neutral-900 px-2 pt-2 pb-3">
-          {navLinks.map((link) => (
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-neutral-900 px-4 pt-2 pb-4 space-y-2 transition-all">
+          {navLinks.map((item) => (
             <a
-              key={link.name}
-              href={link.href}
-              className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-              onClick={() => setIsMenuOpen(false)}
+              key={item}
+              href={`#${item.toLowerCase().replace(" ", "")}`}
+              className="block text-gray-300 hover:text-white text-base font-medium transition-all"
+              onClick={closeMobileMenu}
             >
-              {link.name}
+              {item}
             </a>
           ))}
         </div>
       )}
-
-      {/* Auth Form Modal */}
-      {showAuthForm && <AuthForm onClose={() => setShowAuthForm(false)} />}
     </nav>
   );
-}
+};
+
+export default Navbar;
