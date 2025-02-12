@@ -40,4 +40,3 @@ function Home() {
     </>
   );
 }
-with clerk
