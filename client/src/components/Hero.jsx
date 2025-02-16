@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
   const [amount, setAmount] = useState("");
   const [days, setDays] = useState("");
   const [returns, setReturns] = useState(0);
+
+  const navigate = useNavigate(); // Navigation hook
 
   const calculateReturns = () => {
     const parsedAmount = parseFloat(amount) || 0;
@@ -19,6 +22,7 @@ export default function Hero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[70vh] flex items-center">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
+
           <div className="space-y-8 animate-fade-in-left">
             <h1 className="text-4xl md:text-6xl font-bold text-white">
               Maximize Your <span className="text-purple-500">Solana</span>{" "}
@@ -31,7 +35,11 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300 animate-pulse">
+              {/* Navigate to Solana Wallet */}
+              <button
+                onClick={() => navigate("/wallet")}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300 animate-pulse"
+              >
                 Start Staking
               </button>
               <button className="border border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300">

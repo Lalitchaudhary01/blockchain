@@ -8,6 +8,7 @@ import SecurityMeasures from "./components/SecurityMeasures";
 import UserGuide from "./components/UserGuide";
 import SupportSection from "./components/SupportSection";
 import Footer from "./components/Footer";
+import SolanaWallet from "./components/SolanaWallet";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Routes>
             {/* Define routes */}
             <Route path="/" element={<Home />} />
+            <Route path="/wallet" element={<SolanaWallet />} />
           </Routes>
         </main>
         <Footer />

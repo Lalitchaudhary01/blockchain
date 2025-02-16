@@ -9,6 +9,7 @@ const Auth = ({ closeAuth }) => {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [error, setError] = useState("");
   const [token, setToken] = useState(localStorage.getItem("token") || "");
@@ -29,8 +30,17 @@ const Auth = ({ closeAuth }) => {
     e.preventDefault();
     setError("");
 
-    if (!formData.email || !formData.password || (!isLogin && !formData.name)) {
+    if (
+      !formData.email ||
+      !formData.password ||
+      (!isLogin && (!formData.name || !formData.confirmPassword))
+    ) {
       setError("All fields are required!");
+      return;
+    }
+
+    if (!isLogin && formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match!");
       return;
     }
 
@@ -112,9 +122,20 @@ const Auth = ({ closeAuth }) => {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-3 mb-6 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400"
+              className="w-full p-3 mb-4 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400"
               required
             />
+            {!isLogin && (
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full p-3 mb-6 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400"
+                required
+              />
+            )}
             {error && (
               <p className="text-red-400 text-sm mb-4 text-center">{error}</p>
             )}
