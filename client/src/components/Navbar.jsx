@@ -1,15 +1,33 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Auth from "./Auth";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null); // State to store user info
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch user info from localStorage or API (Replace with real auth logic)
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
+  const handleLogin = () => {
+    navigate("/auth"); // Navigate to Auth Page
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user"); // Remove user data
+    setUser(null);
+    navigate("/"); // Redirect to Home after logout
+  };
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
-  const openAuthModal = () => setIsAuthOpen(true);
-  const closeAuthModal = () => setIsAuthOpen(false);
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -42,14 +60,37 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Auth Button & Mobile Menu Toggle */}
-          <div className="flex items-center gap-4">
-            <button
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium animate-pulse"
-              onClick={openAuthModal}
-            >
-              Login & Register
-            </button>
+          {/* Auth/Login & User Dropdown */}
+          <div className="flex items-center gap-4 relative">
+            {user ? (
+              <div className="relative">
+                <button
+                  className="text-white font-medium bg-purple-700 px-4 py-2 rounded-lg"
+                  onClick={toggleDropdown}
+                >
+                  {user.name}
+                </button>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-neutral-800 text-white rounded-lg shadow-lg">
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 hover:bg-neutral-700"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium animate-pulse"
+                onClick={handleLogin}
+              >
+                Login & Register
+              </button>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -102,9 +143,6 @@ const Navbar = () => {
           </Link>
         ))}
       </div>
-
-      {/* Auth Modal */}
-      {isAuthOpen && <Auth closeAuth={closeAuthModal} />}
     </nav>
   );
 };

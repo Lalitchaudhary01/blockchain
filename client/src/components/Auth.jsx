@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,7 +17,7 @@ const Auth = () => {
     e.preventDefault();
 
     if (!isLogin && (!name || password !== confirmPassword)) {
-      alert("Please fill all fields and ensure passwords match.");
+      toast.error("Please fill all fields and ensure passwords match.");
       return;
     }
 
@@ -40,7 +41,7 @@ const Auth = () => {
       setLoading(false);
 
       if (response.ok) {
-        alert(`${isLogin ? "Login" : "OTP Sent to Email"}`);
+        toast.success(isLogin ? "Login successful!" : "OTP Sent to Email");
         if (isLogin) {
           localStorage.setItem("token", data.token);
           navigate("/");
@@ -48,18 +49,17 @@ const Auth = () => {
           setIsOtpVerification(true);
         }
       } else {
-        alert(`Error: ${data.message}`);
+        toast.error(`Error: ${data.message}`);
       }
     } catch (error) {
       setLoading(false);
-      alert("Network error. Please try again.");
+      toast.error("Network error. Please try again.");
       console.error("Error:", error);
     }
   };
 
   const handleOtpVerification = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     try {
       const response = await fetch(
@@ -70,20 +70,19 @@ const Auth = () => {
           body: JSON.stringify({ email, otp, password }),
         }
       );
-
       const data = await response.json();
       setLoading(false);
 
       if (response.ok) {
-        alert("Account verified! You can now log in.");
+        toast.success("Account verified! You can now log in.");
         setIsOtpVerification(false);
         setIsLogin(true);
       } else {
-        alert(`Error: ${data.message}`);
+        toast.error(`Error: ${data.message}`);
       }
     } catch (error) {
       setLoading(false);
-      alert("Network error. Please try again.");
+      toast.error("Network error. Please try again.");
     }
   };
 
@@ -103,16 +102,6 @@ const Auth = () => {
                 className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium">New Password</label>
-              <input
-                type="password"
-                className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
@@ -176,13 +165,11 @@ const Auth = () => {
               type="submit"
               className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-medium"
               disabled={loading}
-              onClick={() => navigate("/")}
             >
               {loading ? "Processing..." : isLogin ? "Login" : "Register"}
             </button>
           </form>
         )}
-
         <p className="text-center mt-4 text-sm">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <button

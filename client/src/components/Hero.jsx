@@ -38,7 +38,7 @@ export default function Hero() {
               {/* Navigate to Solana Wallet */}
               <button
                 onClick={() => navigate("/wallet")}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300 animate-pulse"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300 animate-pulse ml-5"
               >
                 Start Staking
               </button>
