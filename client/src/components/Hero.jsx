@@ -42,9 +42,9 @@ export default function Hero() {
               >
                 Start Staking
               </button>
-              <button className="border border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300">
+              {/* <button className="border border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300">
                 Learn More
-              </button>
+              </button> */}
             </div>
 
             <div className="flex gap-8 pt-4">

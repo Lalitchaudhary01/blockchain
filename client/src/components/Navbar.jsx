@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Auth from "./Auth";
 
 const Navbar = () => {
@@ -11,12 +12,12 @@ const Navbar = () => {
   const closeAuthModal = () => setIsAuthOpen(false);
 
   const navLinks = [
-    "Home",
-    "Live Stats",
-    "Staking",
-    "Security",
-    "Guide",
-    "Support",
+    { name: "Home", path: "/" },
+    { name: "Live Stats", path: "/livestats" },
+    { name: "Staking", path: "/staking" },
+    { name: "Security", path: "/security" },
+    { name: "Guide", path: "/guide" },
+    { name: "Support", path: "/support" },
   ];
 
   return (
@@ -24,20 +25,20 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center">
-            <span className="text-2xl font-bold text-purple-500">SolStake</span>
-          </div>
+          <Link to="/" className="text-2xl font-bold text-purple-500">
+            SolStake
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-6">
-            {navLinks.map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase().replace(" ", "")}`}
+            {navLinks.map(({ name, path }) => (
+              <Link
+                key={name}
+                to={path}
                 className="text-gray-300 hover:text-white text-sm font-medium transition-all"
               >
-                {item}
-              </a>
+                {name}
+              </Link>
             ))}
           </div>
 
@@ -85,20 +86,22 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-neutral-900 px-4 pt-2 pb-4 space-y-2 transition-all">
-          {navLinks.map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase().replace(" ", "")}`}
-              className="block text-gray-300 hover:text-white text-base font-medium transition-all"
-              onClick={closeMobileMenu}
-            >
-              {item}
-            </a>
-          ))}
-        </div>
-      )}
+      <div
+        className={`md:hidden bg-neutral-900 px-4 pt-2 pb-4 space-y-2 transition-all ${
+          isMobileMenuOpen ? "block" : "hidden"
+        }`}
+      >
+        {navLinks.map(({ name, path }) => (
+          <Link
+            key={name}
+            to={path}
+            className="block text-gray-300 hover:text-white text-base font-medium transition-all"
+            onClick={closeMobileMenu}
+          >
+            {name}
+          </Link>
+        ))}
+      </div>
 
       {/* Auth Modal */}
       {isAuthOpen && <Auth closeAuth={closeAuthModal} />}
