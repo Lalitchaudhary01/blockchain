@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isOtpVerification, setIsOtpVerification] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,14 +20,16 @@ const Auth = () => {
       return;
     }
 
+    setLoading(true);
     const url = isLogin
       ? "http://localhost:5000/api/auth/login"
       : "http://localhost:5000/api/auth/register";
 
-    const payload = isLogin ? { email, password } : { name, email, password };
+    const payload = isLogin
+      ? { email, password }
+      : { name, email, password, confirmPassword };
 
     try {
-      setLoading(true);
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -36,12 +40,12 @@ const Auth = () => {
       setLoading(false);
 
       if (response.ok) {
-        alert(`${isLogin ? "Login" : "Registration"} Successful!`);
+        alert(`${isLogin ? "Login" : "OTP Sent to Email"}`);
         if (isLogin) {
-          localStorage.setItem("token", data.token); // Store JWT token
-          navigate("/"); // Redirect to dashboard after login
+          localStorage.setItem("token", data.token);
+          navigate("/");
         } else {
-          navigate(`/verify-otp?email=${email}`); // Navigate to OTP verification page
+          setIsOtpVerification(true);
         }
       } else {
         alert(`Error: ${data.message}`);
@@ -53,67 +57,132 @@ const Auth = () => {
     }
   };
 
+  const handleOtpVerification = async (e) => {
+    e.preventDefault();
+
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/verify-otp",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp, password }),
+        }
+      );
+
+      const data = await response.json();
+      setLoading(false);
+
+      if (response.ok) {
+        alert("Account verified! You can now log in.");
+        setIsOtpVerification(false);
+        setIsLogin(true);
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      setLoading(false);
+      alert("Network error. Please try again.");
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <div className="bg-neutral-800 p-8 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-bold mb-6 text-center">
-          {isLogin ? "Login" : "Register"}
+          {isOtpVerification ? "Verify OTP" : isLogin ? "Login" : "Register"}
         </h2>
-        <form onSubmit={handleAuth}>
-          {!isLogin && (
+
+        {isOtpVerification ? (
+          <form onSubmit={handleOtpVerification}>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Name</label>
+              <label className="block text-sm font-medium">OTP</label>
               <input
                 type="text"
                 className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
                 required
               />
             </div>
-          )}
-          <div className="mb-4">
-            <label className="block text-sm font-medium">Email</label>
-            <input
-              type="email"
-              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium">Password</label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {!isLogin && (
             <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Confirm Password
-              </label>
+              <label className="block text-sm font-medium">New Password</label>
               <input
                 type="password"
                 className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-          )}
-          <button
-            type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-medium"
-            disabled={loading}
-          >
-            {loading ? "Processing..." : isLogin ? "Login" : "Register"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-medium"
+              disabled={loading}
+            >
+              {loading ? "Verifying..." : "Verify OTP"}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleAuth}>
+            {!isLogin && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium">Name</label>
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+            <div className="mb-4">
+              <label className="block text-sm font-medium">Email</label>
+              <input
+                type="email"
+                className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium">Password</label>
+              <input
+                type="password"
+                className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            {!isLogin && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-medium"
+              disabled={loading}
+              onClick={() => navigate("/")}
+            >
+              {loading ? "Processing..." : isLogin ? "Login" : "Register"}
+            </button>
+          </form>
+        )}
+
         <p className="text-center mt-4 text-sm">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
