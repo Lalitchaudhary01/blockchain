@@ -1,28 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../redux/userSlice"; // Only keep setUser
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState(null); // State to store user info
+  const user = useSelector((state) => state.user.user); // Access user from Redux
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Fetch user info from localStorage or API (Replace with real auth logic)
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-    }
-  }, []);
+  const dispatch = useDispatch();
 
   const handleLogin = () => {
     navigate("/auth"); // Navigate to Auth Page
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("user"); // Remove user data
-    setUser(null);
-    navigate("/"); // Redirect to Home after logout
   };
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
@@ -38,16 +27,20 @@ const Navbar = () => {
     { name: "Support", path: "/support" },
   ];
 
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      dispatch(setUser(storedUser)); // Set the user from localStorage into Redux state
+    }
+  }, [dispatch]);
+
   return (
     <nav className="fixed w-full z-50 bg-neutral-900 border-b border-neutral-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-purple-500">
             SolStake
           </Link>
-
-          {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-6">
             {navLinks.map(({ name, path }) => (
               <Link
@@ -59,8 +52,6 @@ const Navbar = () => {
               </Link>
             ))}
           </div>
-
-          {/* Auth/Login & User Dropdown */}
           <div className="flex items-center gap-4 relative">
             {user ? (
               <div className="relative">
@@ -70,16 +61,9 @@ const Navbar = () => {
                 >
                   {user.name}
                 </button>
-
-                {/* Dropdown Menu */}
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-40 bg-neutral-800 text-white rounded-lg shadow-lg">
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 hover:bg-neutral-700"
-                    >
-                      Logout
-                    </button>
+                    {/* Removed the Logout button */}
                   </div>
                 )}
               </div>
@@ -91,8 +75,6 @@ const Navbar = () => {
                 Login & Register
               </button>
             )}
-
-            {/* Mobile Menu Button */}
             <button
               aria-label="Toggle mobile menu"
               className="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-neutral-800"
@@ -125,8 +107,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
       <div
         className={`md:hidden bg-neutral-900 px-4 pt-2 pb-4 space-y-2 transition-all ${
           isMobileMenuOpen ? "block" : "hidden"

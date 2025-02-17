@@ -104,3 +104,14 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
+
+//logout user
+// Logout User
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("token"); // Clear the token if stored in cookies
+    res.json({ message: "Logout successful" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
