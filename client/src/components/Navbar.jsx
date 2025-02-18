@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../redux/userSlice"; // Only keep setUser
+import { setUser, removeUser } from "../redux/userSlice"; // Only keep setUser and removeUser
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,6 +12,23 @@ const Navbar = () => {
 
   const handleLogin = () => {
     navigate("/auth"); // Navigate to Auth Page
+  };
+
+  const handleLogout = async () => {
+    try {
+      dispatch(removeUser());
+      localStorage.removeItem("token"); // Clear token from local storage
+      localStorage.removeItem("user"); // Clear user info from local storage
+      const response = await fetch("http://localhost:5000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
@@ -63,7 +80,12 @@ const Navbar = () => {
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-40 bg-neutral-800 text-white rounded-lg shadow-lg">
-                    {/* Removed the Logout button */}
+                    <button
+                      className="w-full text-left px-4 py-2 hover:bg-neutral-700"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
                   </div>
                 )}
               </div>

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/userSlice";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,6 +14,7 @@ const Auth = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -44,6 +47,8 @@ const Auth = () => {
         toast.success(isLogin ? "Login successful!" : "OTP Sent to Email");
         if (isLogin) {
           localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify({ name, email }));
+          dispatch(setUser({ name, email }));
           navigate("/");
         } else {
           setIsOtpVerification(true);
