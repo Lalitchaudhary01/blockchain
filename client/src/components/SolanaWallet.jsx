@@ -6,19 +6,15 @@ import {
   clusterApiUrl,
 } from "@solana/web3.js";
 
-const SolanaWalletUI = () => {
+const SolanaWallet = () => {
   const [walletAddress, setWalletAddress] = useState(null);
   const [balance, setBalance] = useState(null);
-  const [stakedAmount, setStakedAmount] = useState(0);
-  const [amount, setAmount] = useState("");
+  const [transactions, setTransactions] = useState([]);
+  const [tokenBalances, setTokenBalances] = useState([]);
+
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
-  useEffect(() => {
-    if (walletAddress) {
-      fetchBalance(walletAddress);
-    }
-  }, [walletAddress]);
-
+  // Connect Phantom Wallet
   const connectWallet = async () => {
     if (window.solana && window.solana.isPhantom) {
       try {
@@ -33,6 +29,7 @@ const SolanaWalletUI = () => {
     }
   };
 
+  // Fetch Wallet Balance
   const fetchBalance = async (pubKey) => {
     try {
       const balanceInLamports = await connection.getBalance(
@@ -44,15 +41,54 @@ const SolanaWalletUI = () => {
     }
   };
 
+  // Fetch Recent Transactions
+  const fetchTransactions = async (pubKey) => {
+    try {
+      const signatureInfo = await connection.getSignaturesForAddress(
+        new PublicKey(pubKey)
+      );
+      setTransactions(signatureInfo.slice(0, 5)); // Get last 5 transactions
+    } catch (error) {
+      console.error("Failed to fetch transactions:", error);
+    }
+  };
+
+  // Fetch Token Balances (SPL Tokens)
+  const fetchTokenAccounts = async (pubKey) => {
+    try {
+      const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+        new PublicKey(pubKey),
+        {
+          programId: new PublicKey(
+            "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+          ),
+        }
+      );
+      setTokenBalances(tokenAccounts.value);
+    } catch (error) {
+      console.error("Failed to fetch token balances:", error);
+    }
+  };
+
+  // Fetch all wallet data on connection
+  useEffect(() => {
+    if (walletAddress) {
+      fetchBalance(walletAddress);
+      fetchTransactions(walletAddress);
+      fetchTokenAccounts(walletAddress);
+    }
+  }, [walletAddress]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-5">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
+        {/* Connect/Disconnect Button */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Wallet Balance</h2>
+          <h2 className="text-xl font-bold">Solana Wallet</h2>
           {walletAddress ? (
             <button
               onClick={() => setWalletAddress(null)}
-              className="bg-purple-600 text-white px-4 py-2 rounded"
+              className="bg-red-500 text-white px-4 py-2 rounded"
             >
               Disconnect
             </button>
@@ -61,10 +97,20 @@ const SolanaWalletUI = () => {
               onClick={connectWallet}
               className="bg-purple-600 text-white px-4 py-2 rounded"
             >
-              Connect
+              Connect Wallet
             </button>
           )}
         </div>
+
+        {/* Wallet Address */}
+        {walletAddress && (
+          <div className="p-4 bg-gray-200 rounded mb-4">
+            <p className="text-gray-600">Wallet Address</p>
+            <h3 className="text-md font-bold break-words">{walletAddress}</h3>
+          </div>
+        )}
+
+        {/* Balance Display */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="p-4 bg-gray-200 rounded">
             <p className="text-gray-600">Available Balance</p>
@@ -72,44 +118,47 @@ const SolanaWalletUI = () => {
               {walletAddress ? `${balance} SOL` : "-"}
             </h3>
           </div>
-          <div className="p-4 bg-gray-200 rounded">
-            <p className="text-gray-600">Staked Amount</p>
-            <h3 className="text-2xl font-bold">
-              {walletAddress ? `${stakedAmount} SOL` : "-"}
-            </h3>
-          </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 bg-gray-200 rounded">
-            <h3 className="font-bold mb-2">Deposit Funds</h3>
-            <input
-              type="number"
-              className="w-full p-2 mb-2 border rounded"
-              placeholder="Enter SOL amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-            <button className="w-full bg-purple-600 text-white p-2 rounded">
-              Deposit
-            </button>
-          </div>
-          <div className="p-4 bg-gray-200 rounded">
-            <h3 className="font-bold mb-2">Withdraw Funds</h3>
-            <input
-              type="number"
-              className="w-full p-2 mb-2 border rounded"
-              placeholder="Enter SOL amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-            <button className="w-full bg-purple-600 text-white p-2 rounded">
-              Withdraw
-            </button>
-          </div>
+
+        {/* Recent Transactions */}
+        <div className="p-4 bg-gray-200 rounded mb-4">
+          <h3 className="font-bold mb-2">Recent Transactions</h3>
+          {transactions.length > 0 ? (
+            transactions.map((tx, index) => (
+              <p key={index} className="text-sm">
+                {tx.signature.slice(0, 20)}...{" "}
+                <a
+                  href={`https://explorer.solana.com/tx/${tx.signature}?cluster=devnet`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500"
+                >
+                  View
+                </a>
+              </p>
+            ))
+          ) : (
+            <p>No transactions found</p>
+          )}
+        </div>
+
+        {/* Token Balances */}
+        <div className="p-4 bg-gray-200 rounded">
+          <h3 className="font-bold mb-2">SPL Tokens</h3>
+          {tokenBalances.length > 0 ? (
+            tokenBalances.map((token, index) => (
+              <p key={index} className="text-sm">
+                {token.account.data.parsed.info.mint} -{" "}
+                {token.account.data.parsed.info.tokenAmount.uiAmount} Tokens
+              </p>
+            ))
+          ) : (
+            <p>No tokens found</p>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default SolanaWalletUI;
+export default SolanaWallet;

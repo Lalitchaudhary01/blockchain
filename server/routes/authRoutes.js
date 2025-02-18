@@ -4,6 +4,7 @@ const {
   verifyOTP,
   login,
   logout,
+  submitSupportTicket,
 } = require("../controllers/authController");
 const authMiddleware = require("../middleware/authMiddleware");
 
@@ -13,6 +14,7 @@ router.post("/register", register);
 router.post("/verify-otp", verifyOTP);
 router.post("/login", login);
 router.post("/logout", logout);
+router.post("/support", submitSupportTicket);
 
 // 🔒 Protected Route Example (Only accessible with valid JWT token)
 router.get("/protected-route", authMiddleware, (req, res) => {

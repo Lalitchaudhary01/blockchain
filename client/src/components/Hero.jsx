@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
 export default function Hero() {
   const [amount, setAmount] = useState("");
   const [days, setDays] = useState("");
   const [returns, setReturns] = useState(0);
-
-  const navigate = useNavigate(); // Navigation hook
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
 
   const calculateReturns = () => {
     const parsedAmount = parseFloat(amount) || 0;
@@ -17,12 +19,20 @@ export default function Hero() {
     setReturns(calculatedReturns.toFixed(2));
   };
 
+  const handleStartStaking = () => {
+    if (user) {
+      navigate("/wallet");
+    } else {
+      toast.error("You need to log in to start staking!");
+      navigate("/auth");
+    }
+  };
+
   return (
     <section id="hero" className="bg-neutral-900 pt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[70vh] flex items-center">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
-
           <div className="space-y-8 animate-fade-in-left">
             <h1 className="text-4xl md:text-6xl font-bold text-white">
               Maximize Your <span className="text-purple-500">Solana</span>{" "}
@@ -35,16 +45,12 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Navigate to Solana Wallet */}
               <button
-                onClick={() => navigate("/wallet")}
+                onClick={handleStartStaking}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300 animate-pulse ml-5"
               >
                 Start Staking
               </button>
-              {/* <button className="border border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300">
-                Learn More
-              </button> */}
             </div>
 
             <div className="flex gap-8 pt-4">
@@ -112,7 +118,10 @@ export default function Hero() {
                     </p>
                   </div>
 
-                  <button className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300">
+                  <button
+                    onClick={handleStartStaking}
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300"
+                  >
                     Connect Wallet to Stake
                   </button>
                 </div>
