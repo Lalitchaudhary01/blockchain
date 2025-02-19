@@ -4,6 +4,9 @@ import {
   PublicKey,
   LAMPORTS_PER_SOL,
   clusterApiUrl,
+  Transaction,
+  SystemProgram,
+  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 
 const SolanaWallet = () => {
@@ -11,6 +14,8 @@ const SolanaWallet = () => {
   const [balance, setBalance] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [tokenBalances, setTokenBalances] = useState([]);
+  const [withdrawAddress, setWithdrawAddress] = useState("");
+  const [amount, setAmount] = useState("");
 
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
@@ -70,6 +75,38 @@ const SolanaWallet = () => {
     }
   };
 
+  // Withdraw Funds
+  const withdrawFunds = async () => {
+    if (!withdrawAddress || !amount) {
+      alert("Enter a valid address and amount");
+      return;
+    }
+
+    try {
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: new PublicKey(walletAddress),
+          toPubkey: new PublicKey(withdrawAddress),
+          lamports: parseFloat(amount) * LAMPORTS_PER_SOL,
+        })
+      );
+
+      const { signature } = await window.solana.signAndSendTransaction(
+        transaction
+      );
+
+      await sendAndConfirmTransaction(connection, transaction, [
+        window.solana.publicKey,
+      ]);
+
+      alert(`Transaction successful! Tx Signature: ${signature}`);
+      fetchBalance(walletAddress); // Update balance
+    } catch (error) {
+      console.error("Transaction failed:", error);
+      alert("Transaction failed! Please check the address and balance.");
+    }
+  };
+
   // Fetch all wallet data on connection
   useEffect(() => {
     if (walletAddress) {
@@ -120,6 +157,48 @@ const SolanaWallet = () => {
           </div>
         </div>
 
+        {/* Add Funds */}
+        {walletAddress && (
+          <div className="p-4 bg-gray-200 rounded mb-4">
+            <h3 className="font-bold mb-2">Add Funds</h3>
+            <a
+              href="https://faucet.solana.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-500 text-white px-4 py-2 rounded block text-center"
+            >
+              Get Free Devnet SOL
+            </a>
+          </div>
+        )}
+
+        {/* Withdraw Funds */}
+        {walletAddress && (
+          <div className="p-4 bg-gray-200 rounded mb-4">
+            <h3 className="font-bold mb-2">Withdraw Funds</h3>
+            <input
+              type="text"
+              placeholder="Enter recipient address"
+              value={withdrawAddress}
+              onChange={(e) => setWithdrawAddress(e.target.value)}
+              className="w-full p-2 mb-2 border rounded"
+            />
+            <input
+              type="number"
+              placeholder="Enter amount (SOL)"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full p-2 mb-2 border rounded"
+            />
+            <button
+              onClick={withdrawFunds}
+              className="bg-green-500 text-white px-4 py-2 rounded w-full"
+            >
+              Send SOL
+            </button>
+          </div>
+        )}
+
         {/* Recent Transactions */}
         <div className="p-4 bg-gray-200 rounded mb-4">
           <h3 className="font-bold mb-2">Recent Transactions</h3>
@@ -139,21 +218,6 @@ const SolanaWallet = () => {
             ))
           ) : (
             <p>No transactions found</p>
-          )}
-        </div>
-
-        {/* Token Balances */}
-        <div className="p-4 bg-gray-200 rounded">
-          <h3 className="font-bold mb-2">SPL Tokens</h3>
-          {tokenBalances.length > 0 ? (
-            tokenBalances.map((token, index) => (
-              <p key={index} className="text-sm">
-                {token.account.data.parsed.info.mint} -{" "}
-                {token.account.data.parsed.info.tokenAmount.uiAmount} Tokens
-              </p>
-            ))
-          ) : (
-            <p>No tokens found</p>
           )}
         </div>
       </div>
