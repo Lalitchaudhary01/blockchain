@@ -72,6 +72,7 @@ const SolanaWallet = () => {
       <div className="bg-white/10 shadow-xl backdrop-blur-lg rounded-xl p-8 w-full max-w-2xl text-white">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Solana Wallet</h2>
+
           {walletAddress ? (
             <button
               onClick={() => setWalletAddress(null)}

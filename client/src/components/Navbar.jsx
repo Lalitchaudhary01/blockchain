@@ -76,7 +76,7 @@ const Navbar = () => {
                   className="text-white font-medium bg-purple-700 px-4 py-2 rounded-lg"
                   onClick={toggleDropdown}
                 >
-                  {user.name}
+                  {user.email}
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-40 bg-neutral-800 text-white rounded-lg shadow-lg">
