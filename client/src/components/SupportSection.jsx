@@ -15,7 +15,6 @@ export default function SupportSection() {
 
   const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
-  const backendUrl = process.env.SUPPORT_EMAIL;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,7 +26,7 @@ export default function SupportSection() {
     setResponseMessage(null);
 
     try {
-      const response = await fetch(`${backendUrl}/support`, {
+      const response = await fetch("http://localhost:5000/api/support", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

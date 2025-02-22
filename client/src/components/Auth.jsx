@@ -15,7 +15,6 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -26,7 +25,9 @@ const Auth = () => {
     }
 
     setLoading(true);
-    const url = isLogin ? `${API_BASE_URL}/login` : `${API_BASE_URL}/register`;
+    const url = isLogin
+      ? "http://localhost:5000/api/auth/login"
+      : "http://localhost:5000/api/auth/register";
 
     const payload = isLogin
       ? { email, password }
@@ -66,11 +67,14 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/verify-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp, password }),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/auth/verify-otp",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp, password }),
+        }
+      );
       const data = await response.json();
       setLoading(false);
 
