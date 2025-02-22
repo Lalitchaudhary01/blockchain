@@ -116,19 +116,19 @@ exports.logout = async (req, res) => {
   }
 };
 // Submit Support Ticket
-exports.submitSupportTicket = async (req, res) => {
-  try {
-    const { name, email, subject, message } = req.body;
+// exports.submitSupportTicket = async (req, res) => {
+//   try {
+//     const { name, email, subject, message } = req.body;
 
-    await transporter.sendMail({
-      from: email,
-      to: "coder46789@gmail.com",
-      subject: `Support Request: ${subject}`,
-      text: `From: ${name} \nEmail: ${email} \n\nMessage: ${message}`,
-    });
+//     await transporter.sendMail({
+//       from: email,
+//       to: "coder46789@gmail.com",
+//       subject: `Support Request: ${subject}`,
+//       text: `From: ${name} \nEmail: ${email} \n\nMessage: ${message}`,
+//     });
 
-    res.json({ message: "Support request submitted successfully." });
-  } catch (error) {
-    res.status(500).json({ message: "Server Error", error: error.message });
-  }
-};
+//     res.json({ message: "Support request submitted successfully." });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server Error", error: error.message });
+//   }
+// };

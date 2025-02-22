@@ -49,7 +49,7 @@ const Auth = () => {
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify({ name, email }));
           dispatch(setUser({ name, email }));
-          navigate("/");
+          navigate("/wallet");
         } else {
           setIsOtpVerification(true);
         }

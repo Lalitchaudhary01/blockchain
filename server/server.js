@@ -1,22 +1,31 @@
+require("dotenv").config(); // Load environment variables early
 const express = require("express");
-const dotenv = require("dotenv");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const supportRoutes = require("./routes/supportRoutes");
 
-dotenv.config();
 const app = express();
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json()); // Replaces bodyParser.json()
 
 // Connect Database
-connectDB();
+connectDB().catch((err) => {
+  console.error("❌ Database connection failed:", err.message);
+  process.exit(1);
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api", supportRoutes);
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal Server Error" });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

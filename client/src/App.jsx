@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 import SolanaWallet from "./components/SolanaWallet";
 import Auth from "./components/Auth";
 import OtpVerification from "./components/OtpVerification";
+import ProtectedRoute from "./components/ProtectedRoute"; // Import Protected Route
 
 export default function App() {
   return (
@@ -21,43 +22,29 @@ export default function App() {
         <Navbar />
         <main className="flex-1 relative">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Hero />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/verify-otp" element={<OtpVerification />} />
-            <Route path="/wallet" element={<SolanaWallet />} />
+
+            {/* Protect the wallet route */}
+            <Route
+              path="/wallet"
+              element={
+                <ProtectedRoute>
+                  <SolanaWallet />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/livestats" element={<LiveStats />} />
             <Route path="/staking" element={<StakingFeatures />} />
             <Route path="/security" element={<SecurityMeasures />} />
             <Route path="/guide" element={<UserGuide />} />
             <Route path="/support" element={<SupportSection />} />
-            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />
       </div>
     </Router>
-  );
-}
-
-// Home component containing the main sections
-function Home() {
-  return (
-    <>
-      <Hero />
-      <LiveStats />
-      <StakingFeatures />
-      <SecurityMeasures />
-      <UserGuide />
-      <SupportSection />
-    </>
-  );
-}
-
-// 404 Not Found Page
-function NotFound() {
-  return (
-    <div className="flex items-center justify-center h-screen text-2xl text-red-500">
-      404 - Page Not Found
-    </div>
   );
 }
