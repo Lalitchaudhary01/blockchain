@@ -9,7 +9,7 @@ const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const handleLogin = () => {
     navigate("/auth"); // Navigate to Auth Page
   };
@@ -19,7 +19,7 @@ const Navbar = () => {
       dispatch(removeUser());
       localStorage.removeItem("token"); // Clear token from local storage
       localStorage.removeItem("user"); // Clear user info from local storage
-      const response = await fetch("http://localhost:5000/api/auth/logout", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
