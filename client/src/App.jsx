@@ -21,10 +21,17 @@ export default function App() {
       <div className="antialiased text-gray-800 min-h-screen flex flex-col">
         <Toaster /> {/* Toaster for global toast notifications */}
         <Routes>
-          {/* Agar Home page hai toh Navbar aur Footer nahi dikhayenge */}
-          <Route path="/home" element={<Home />} />
+          {/* ✅ Protect the /wallet route */}
+          <Route
+            path="/wallet"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* Baaki sab pages ke liye Navbar aur Footer dikhana hai */}
+          {/* ✅ Baaki sab pages ke liye Navbar aur Footer dikhana hai */}
           <Route
             path="/*"
             element={
@@ -36,9 +43,9 @@ export default function App() {
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/verify-otp" element={<OtpVerification />} />
 
-                    {/* Protect the wallet route */}
+                    {/* ✅ Protect the /wallets route */}
                     <Route
-                      path="/wallet"
+                      path="/wallets"
                       element={
                         <ProtectedRoute>
                           <SolanaWallet />

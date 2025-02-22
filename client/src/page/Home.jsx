@@ -3,7 +3,6 @@ import Sidebar from "./Sidebar";
 import Wallet from "./Wallet";
 import InvestmentCalculator from "./InvestmentCalculator";
 import Dashboard from "./Dashboard";
-// import ProfileSettings from "./ProfileSettings";
 
 const Home = () => {
   return (
@@ -13,7 +12,6 @@ const Home = () => {
         <Dashboard />
         <InvestmentCalculator />
         <Wallet />
-        {/* <ProfileSettings /> */}
       </main>
     </div>
   );

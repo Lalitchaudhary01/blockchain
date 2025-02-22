@@ -1,15 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { removeUser } from "../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = ({ user }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    dispatch(removeUser());
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    try {
+      await fetch("http://localhost:5000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+
+    navigate("/auth");
+  };
+
   return (
     <nav className="fixed h-screen w-64 bg-[#0F1C2E] text-white hidden lg:flex flex-col">
       <div className="p-6 border-b border-neutral-700/20">
         <span className="text-2xl font-bold text-[#F7931A]">Bitcoinstake</span>
       </div>
+
       <div className="flex-1 py-6">
         <a
           href="#dashboard"
-          className="flex items-center px-6 py-3 text-neutral-300 hover:bg-neutral-700/20 hover:text-white transition-colors active"
+          className="flex items-center px-6 py-3 text-neutral-300 hover:bg-neutral-700/20 hover:text-white transition-colors"
         >
           <svg
             className="w-5 h-5 mr-3"
@@ -65,16 +90,58 @@ const Sidebar = () => {
           Wallet
         </a>
       </div>
-      <div className="p-6 border-t border-neutral-700/20">
-        <div className="flex items-center">
-          <div className="w-10 h-10 rounded-full bg-[#F7931A] flex items-center justify-center">
-            <span className="text-white font-bold">JS</span>
+
+      {/* User Profile Section */}
+      <div
+        className="relative p-6 border-t border-neutral-700/20 cursor-pointer"
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+      >
+        <div className="flex items-center justify-between">
+          {/* Rectangular Profile Section */}
+          <div className="w-32 h-10 bg-[#F7931A] flex items-center justify-center rounded-md">
+            <span className="text-white font-bold">{user?.name}</span>
           </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium">John Smith</p>
-            <p className="text-xs text-neutral-400">user@example.com</p>
-          </div>
+
+          {/* Small Down Arrow Icon */}
+          <svg
+            className="w-5 h-5 text-white ml-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
         </div>
+
+        {/* Dropdown Menu (Logout Button) */}
+        {isDropdownOpen && (
+          <div className="absolute right-0 mt-2 w-40 bg-neutral-800 rounded-md shadow-lg z-10">
+            <button
+              onClick={handleLogout}
+              className="text-left px-4 py-2 text-sm text-white hover:bg-neutral-700 rounded-md flex items-center"
+            >
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h6a2 2 0 012 2v1"
+                />
+              </svg>
+              Logout
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );
