@@ -54,14 +54,6 @@ const Wallet = () => {
     }
   };
 
-  const handleAddFunds = async () => {
-    alert("Feature to add funds coming soon!");
-  };
-
-  const handleWithdrawFunds = async () => {
-    alert("Feature to withdraw funds coming soon!");
-  };
-
   useEffect(() => {
     if (walletAddress) {
       fetchBalance(walletAddress);
@@ -124,21 +116,6 @@ const Wallet = () => {
             <p className="text-gray-400">Next Payout</p>
             <h3 className="text-xl font-bold">{nextPayout ?? "-"} SOL</h3>
           </div>
-        </div>
-
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={handleAddFunds}
-            className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
-          >
-            Add Funds
-          </button>
-          <button
-            onClick={handleWithdrawFunds}
-            className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded"
-          >
-            Withdraw Funds
-          </button>
         </div>
 
         <div className="p-4 bg-gray-800 rounded-lg">

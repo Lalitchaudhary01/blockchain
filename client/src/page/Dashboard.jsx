@@ -31,12 +31,12 @@ const Dashboard = () => {
             change: "+$125",
             note: "from yesterday",
           },
-          {
-            title: "Total Earnings",
-            value: "$147,500.00",
-            change: "+12.5%",
-            note: "all time",
-          },
+          // {
+          //   title: "Total Earnings",
+          //   value: "$147,500.00",
+          //   change: "+12.5%",
+          //   note: "all time",
+          // },
         ].map((stat, index) => (
           <div
             key={index}
