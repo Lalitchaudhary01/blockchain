@@ -26,7 +26,7 @@ export default function Hero() {
 
   const handleStartStaking = () => {
     if (user) {
-      navigate("/wallet");
+      navigate("/Home");
     } else {
       toast.error("You need to log in to start staking!");
       navigate("/auth");

@@ -23,7 +23,7 @@ export default function App() {
         <Routes>
           {/* ✅ Protect the /wallet route */}
           <Route
-            path="/wallet"
+            path="/Home"
             element={
               <ProtectedRoute>
                 <Home />
