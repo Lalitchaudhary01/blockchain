@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
+import { motion } from "framer-motion";
 import { setUser } from "../redux/userSlice";
 
 const Auth = () => {
@@ -59,122 +60,107 @@ const Auth = () => {
     } catch (error) {
       setLoading(false);
       toast.error("Network error. Please try again.");
-      console.error("Error:", error);
-    }
-  };
-
-  const handleOtpVerification = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/verify-otp",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, otp, password }),
-        }
-      );
-      const data = await response.json();
-      setLoading(false);
-
-      if (response.ok) {
-        toast.success("Account verified! You can now log in.");
-        setIsOtpVerification(false);
-        setIsLogin(true);
-      } else {
-        toast.error(`Error: ${data.message}`);
-      }
-    } catch (error) {
-      setLoading(false);
-      toast.error("Network error. Please try again.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
-      <div className="bg-neutral-800 p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          {isOtpVerification ? "Verify OTP" : isLogin ? "Login" : "Register"}
-        </h2>
+    <div className="relative flex items-center justify-center min-h-screen bg-gray-900 text-white overflow-hidden">
+      {/* Animated Background */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-purple-700 via-indigo-800 to-blue-900 opacity-70"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5 }}
+      />
 
-        {isOtpVerification ? (
-          <form onSubmit={handleOtpVerification}>
+      {/* Floating Particles */}
+      {[...Array(10)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute bg-white rounded-full opacity-30"
+          style={{
+            width: `${Math.random() * 10 + 5}px`,
+            height: `${Math.random() * 10 + 5}px`,
+            top: `${Math.random() * 100}vh`,
+            left: `${Math.random() * 100}vw`,
+          }}
+          animate={{
+            y: [-10, 10, -10],
+            opacity: [0.3, 0.7, 0.3],
+          }}
+          transition={{
+            duration: Math.random() * 3 + 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+
+      {/* Auth Form */}
+      <motion.div
+        className="bg-neutral-800 p-8 rounded-lg shadow-lg w-96 z-10 relative"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          {isLogin ? "Login" : "Register"}
+        </h2>
+        <form onSubmit={handleAuth}>
+          {!isLogin && (
             <div className="mb-4">
-              <label className="block text-sm font-medium">OTP</label>
+              <label className="block text-sm font-medium">Name</label>
               <input
                 type="text"
                 className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
-            <button
-              type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-medium"
-              disabled={loading}
-            >
-              {loading ? "Verifying..." : "Verify OTP"}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleAuth}>
-            {!isLogin && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium">Name</label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </div>
-            )}
+          )}
+          <div className="mb-4">
+            <label className="block text-sm font-medium">Email</label>
+            <input
+              type="email"
+              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium">Password</label>
+            <input
+              type="password"
+              className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {!isLogin && (
             <div className="mb-4">
-              <label className="block text-sm font-medium">Email</label>
-              <input
-                type="email"
-                className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Password</label>
+              <label className="block text-sm font-medium">
+                Confirm Password
+              </label>
               <input
                 type="password"
                 className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
             </div>
-            {!isLogin && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  className="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-purple-500"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
-            )}
-            <button
-              type="submit"
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-medium"
-              disabled={loading}
-            >
-              {loading ? "Processing..." : isLogin ? "Login" : "Register"}
-            </button>
-          </form>
-        )}
+          )}
+          <button
+            type="submit"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-medium transition duration-200 ease-in-out transform hover:scale-105"
+            disabled={loading}
+          >
+            {loading ? "Processing..." : isLogin ? "Login" : "Register"}
+          </button>
+        </form>
         <p className="text-center mt-4 text-sm">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
@@ -184,7 +170,7 @@ const Auth = () => {
             {isLogin ? "Register here" : "Login here"}
           </button>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 };

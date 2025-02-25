@@ -12,7 +12,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-white">Quick Links</h4>
             <ul className="space-y-2">
-              {["Home", "Staking", "Referrals", "Support"].map((link) => (
+              {["Home", "Staking", "Support"].map((link) => (
                 <li key={link}>
                   <a
                     href={`#${link.toLowerCase()}`}
@@ -43,7 +43,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h4 className="text-lg font-semibold text-white">Newsletter</h4>
             <form className="flex gap-2">
               <input
@@ -55,7 +55,7 @@ export default function Footer() {
                 Subscribe
               </button>
             </form>
-          </div>
+          </div> */}
         </div>
 
         <div className="border-t border-neutral-800 pt-8">

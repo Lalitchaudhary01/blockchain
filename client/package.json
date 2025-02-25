@@ -27,6 +27,7 @@
     "chart.js": "^4.4.7",
     "ethers": "^6.13.5",
     "events": "^3.3.0",
+    "framer-motion": "^12.4.7",
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",
     "react-apexcharts": "^1.7.0",
