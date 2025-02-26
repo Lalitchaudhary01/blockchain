@@ -50,7 +50,7 @@ const Auth = () => {
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify({ name, email }));
           dispatch(setUser({ name, email }));
-          navigate("/wallet");
+          navigate("/Home");
         } else {
           setIsOtpVerification(true);
         }

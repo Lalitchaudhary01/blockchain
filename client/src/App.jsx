@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Toaster } from "react-hot-toast"; // Import Toaster for toast notifications
+import { Toaster } from "react-hot-toast"; // Toast notifications
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -12,26 +12,48 @@ import Footer from "./components/Footer";
 import SolanaWallet from "./components/SolanaWallet";
 import Auth from "./components/Auth";
 import OtpVerification from "./components/OtpVerification";
-import ProtectedRoute from "./components/ProtectedRoute"; // Import Protected Route
+import ProtectedRoute from "./components/ProtectedRoute";
+import Sidebar from "./page/Sidebar"; // Import Sidebar
+
 import Home from "./page/Home";
+import Dashboard from "./page/Dashboard";
+import Wallet from "./page/Wallet";
+import Deposit from "./page/Deposit";
+import Withdraw from "./page/Withdraw";
+import Profile from "./page/Profile";
+import InvestmentCalculator from "./page/InvestmentCalculator";
 
 export default function App() {
   return (
     <Router>
       <div className="antialiased text-gray-800 min-h-screen flex flex-col">
-        <Toaster /> {/* Toaster for global toast notifications */}
+        <Toaster /> {/* Global toast notifications */}
         <Routes>
-          {/* ✅ Protect the /wallet route */}
-          <Route
-            path="/Home"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
+          {/* Protected Routes with Sidebar */}
+          {[
+            { path: "/home", component: <Home /> },
+            { path: "/dashboard", component: <Dashboard /> },
+            { path: "/calculator", component: <InvestmentCalculator /> },
+            { path: "/wallet", component: <Wallet /> },
+            { path: "/deposit", component: <Deposit /> },
+            { path: "/withdraw", component: <Withdraw /> },
+            { path: "/profile", component: <Profile /> },
+          ].map(({ path, component }, index) => (
+            <Route
+              key={index}
+              path={path}
+              element={
+                <ProtectedRoute>
+                  <div className="flex min-h-screen">
+                    <Sidebar />
+                    <div className="flex-grow p-6">{component}</div>
+                  </div>
+                </ProtectedRoute>
+              }
+            />
+          ))}
 
-          {/* ✅ Baaki sab pages ke liye Navbar aur Footer dikhana hai */}
+          {/* Public Routes with Navbar and Footer */}
           <Route
             path="/*"
             element={
@@ -43,7 +65,7 @@ export default function App() {
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/verify-otp" element={<OtpVerification />} />
 
-                    {/* ✅ Protect the /wallets route */}
+                    {/* Protect the /wallets route */}
                     <Route
                       path="/wallets"
                       element={
