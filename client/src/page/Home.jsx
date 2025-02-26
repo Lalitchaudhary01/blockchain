@@ -6,7 +6,7 @@ import Dashboard from "./Dashboard";
 const Home = () => {
   return (
     <div className="flex bg-[#E5E7EB] min-h-screen">
-      <main className="flex-1 lg:ml-64 h-screen overflow-y-auto">
+      <main className="flex-1  h-screen overflow-y-auto">
         <Dashboard />
         <InvestmentCalculator />
         <Wallet />

@@ -18,7 +18,7 @@ const Deposit = () => {
 
   if (depositMade) {
     return (
-      <section className="p-6 bg-black min-h-screen text-white">
+      <section className="p-6 bg-gray-100  min-h-screen text-white">
         <div className="max-w-lg mx-auto bg-gray-900 p-6 rounded-xl shadow-lg text-center">
           <h2 className="text-2xl font-bold text-green-400">Deposit Address</h2>
           <p className="mt-2 text-gray-300">
@@ -54,7 +54,7 @@ const Deposit = () => {
   }
 
   return (
-    <section className="p-6 bg-black min-h-screen text-white">
+    <section className="p-6 bg-gray-100  min-h-screen text-white">
       <div className="max-w-lg mx-auto bg-gray-900 p-6 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold text-green-400">Solana Staking</h2>
         <p className="text-gray-300 mt-2">Select staking amount & timeframe</p>

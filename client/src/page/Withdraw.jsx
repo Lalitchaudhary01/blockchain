@@ -6,7 +6,7 @@ const Withdraw = () => {
   const [amount, setAmount] = useState("");
 
   return (
-    <section className="p-6 bg-black min-h-screen text-white">
+    <section className="p-6 bg-gray-100  min-h-screen text-white">
       <div className="max-w-lg mx-auto bg-gray-900 p-6 rounded-xl shadow-lg">
         <h2 className="text-2xl font-bold text-green-400">Withdraw Funds</h2>
         <p className="text-gray-300 mt-2">Securely withdraw your SOL funds.</p>
