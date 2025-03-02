@@ -45,7 +45,7 @@ const Sidebar = () => {
           { name: "Deposit", href: "/deposit" },
           { name: "Withdraw", href: "/withdraw" },
           { name: "Profile", href: "/profile" },
-          { name: "Support", href: "/support" },
+          { name: "Support", href: "/support-ticket" },
         ].map((item, index) => (
           <button
             key={index}

@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const supportRoutes = require("./routes/supportRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 
 const app = express();
 
@@ -20,6 +21,7 @@ connectDB().catch((err) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api", supportRoutes);
+app.use("/api/profile", profileRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

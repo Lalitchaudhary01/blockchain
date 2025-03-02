@@ -40,6 +40,7 @@
     "react-qr-code": "^2.0.15",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.5",
+    "recharts": "^2.15.1",
     "redux": "^5.0.1",
     "styled-components": "^6.1.15",
     "web3": "^4.16.0"

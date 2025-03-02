@@ -21,6 +21,7 @@ import Wallet from "./page/Wallet";
 import Deposit from "./page/Deposit";
 import Withdraw from "./page/Withdraw";
 import Profile from "./page/Profile";
+import Support from "./page/Support";
 import InvestmentCalculator from "./page/InvestmentCalculator";
 
 export default function App() {
@@ -38,6 +39,7 @@ export default function App() {
             { path: "/deposit", component: <Deposit /> },
             { path: "/withdraw", component: <Withdraw /> },
             { path: "/profile", component: <Profile /> },
+            { path: "/support-ticket", component: <Support /> },
           ].map(({ path, component }, index) => (
             <Route
               key={index}

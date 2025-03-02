@@ -1,16 +1,41 @@
 import React, { useEffect, useState } from "react";
 
 const Profile = () => {
-  const [user, setUser] = useState({ name: "", email: "" });
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulating API call - Replace with actual API fetch
-    setTimeout(() => {
-      setUser({
-        name: "John Doe", // Replace with API data
-        email: "john.doe@example.com", // Replace with API data
-      });
-    }, 1000);
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Token from localStorage
+        if (!token) {
+          console.error("No token found, please log in");
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch("http://localhost:5000/api/profile", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch profile");
+        }
+
+        const data = await response.json();
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
   }, []);
 
   return (
@@ -21,10 +46,16 @@ const Profile = () => {
 
         {/* Profile Card */}
         <div className="mt-6 bg-gray-800 p-4 rounded-lg shadow-md">
-          <h3 className="text-xl font-bold text-white">
-            {user.name || "Loading..."}
-          </h3>
-          <p className="text-gray-400 mt-1">{user.email || "Loading..."}</p>
+          {loading ? (
+            <p className="text-gray-400">Loading...</p>
+          ) : user ? (
+            <>
+              <h3 className="text-xl font-bold text-white">{user.name}</h3>
+              <p className="text-gray-400 mt-1">{user.email}</p>
+            </>
+          ) : (
+            <p className="text-red-500">Failed to load profile</p>
+          )}
         </div>
 
         {/* Edit Profile Button */}

@@ -1,8 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const Dashboard = () => {
+  const [solanaData, setSolanaData] = useState([]);
+
+  // Fetch real-time Solana prices
+  useEffect(() => {
+    const fetchSolanaPrices = async () => {
+      try {
+        const response = await fetch(
+          "https://api.coingecko.com/api/v3/coins/solana/market_chart?vs_currency=usd&days=1&interval=minute"
+        );
+        const data = await response.json();
+        const formattedData = data.prices.map(([timestamp, price]) => ({
+          time: new Date(timestamp).toLocaleTimeString(),
+          price: price.toFixed(2),
+        }));
+        setSolanaData(formattedData.slice(-30)); // Show last 30 minutes
+      } catch (error) {
+        console.error("Error fetching Solana data:", error);
+      }
+    };
+
+    fetchSolanaPrices();
+    const interval = setInterval(fetchSolanaPrices, 60000); // Update every 60 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section id="dashboard" className="bg-gray-100  p-6">
+    <section id="dashboard" className="bg-gray-100 p-6">
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
@@ -82,6 +116,27 @@ const Dashboard = () => {
             )}
           </div>
         ))}
+      </div>
+
+      {/* Solana Price Chart */}
+      <div className="mt-12 p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          Real-Time Solana Price
+        </h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={solanaData}>
+            <XAxis dataKey="time" tick={{ fill: "#4B5563" }} />
+            <YAxis domain={["auto", "auto"]} tick={{ fill: "#4B5563" }} />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="price"
+              stroke="#6366F1"
+              strokeWidth={3}
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </section>
   );
